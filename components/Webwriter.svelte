@@ -27,7 +27,6 @@
 
 <div class="_slice" class:is-editing={editing} on:dblclick={edit}>
   <section>
-    <p class="_empty">DEV!</p>
     {#if isLoading}
       <p class="_empty">Loading</p>
     {:else if raw.length <= 0}
