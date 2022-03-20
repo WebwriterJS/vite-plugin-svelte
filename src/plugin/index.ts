@@ -43,13 +43,13 @@ function WebwriterSvelte(userOptiuons: UserOptions = {}): Plugin[] {
       },
       async load(id) {
         if (id === resolvedVirtualModuleId) {
-          if (options.devModule.type === 'path') {
-            return await fs.readFile(options.devModule.path, 'utf-8');
-          } else if (options.devModule.type === 'source') {
-            return options.devModule.source;
+          if (options.prodModule.type === 'path') {
+            return await fs.readFile(options.prodModule.path, 'utf-8');
+          } else if (options.prodModule.type === 'source') {
+            return options.prodModule.source;
           } else {
             // @ts-expect-error
-            this.error(`Invalid prod config module type '${options.devModule.type}'`)
+            this.error(`Invalid prod config module type '${options.prodModule.type}'`)
           }
         }
       }
