@@ -1,8 +1,12 @@
 import type { Plugin } from 'vite';
+import * as fs from "fs/promises";
+import { UserOptions, resolveOptions } from './Options';
 
-function WebwriterSvelte(options: any): Plugin[] {
-  const virtualModuleId = '@webwriter-options'
-  const resolvedVirtualModuleId = '\0' + virtualModuleId
+function WebwriterSvelte(userOptiuons: UserOptions = {}): Plugin[] {
+  const virtualModuleId = '@webwriter-options';
+  const resolvedVirtualModuleId = '\0' + virtualModuleId;
+
+  const options = resolveOptions(userOptiuons);
 
   return [
     {
@@ -14,9 +18,16 @@ function WebwriterSvelte(options: any): Plugin[] {
           return resolvedVirtualModuleId
         }
       },
-      load(id) {
+      async load(id) {
         if (id === resolvedVirtualModuleId) {
-          return options.devModule;
+          if (options.devModule.type === 'path') {
+            return await fs.readFile(options.devModule.path, 'utf-8');
+          } else if (options.devModule.type === 'source') {
+            return options.devModule.source;
+          } else {
+            // @ts-expect-error
+            this.error(`Invalid dev config module type '${options.devModule.type}'`)
+          }
         }
       }
     },
@@ -30,9 +41,16 @@ function WebwriterSvelte(options: any): Plugin[] {
           return resolvedVirtualModuleId
         }
       },
-      load(id) {
+      async load(id) {
         if (id === resolvedVirtualModuleId) {
-          return options.prodModule;
+          if (options.devModule.type === 'path') {
+            return await fs.readFile(options.devModule.path, 'utf-8');
+          } else if (options.devModule.type === 'source') {
+            return options.devModule.source;
+          } else {
+            // @ts-expect-error
+            this.error(`Invalid prod config module type '${options.devModule.type}'`)
+          }
         }
       }
     },
