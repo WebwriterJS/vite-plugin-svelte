@@ -10,6 +10,8 @@
   $: options.loadRaw(path).then((data) => {
     raw = data;
     isLoading = false;
+  }).catch((err) => {
+    isLoading = false;
   });
 
   function edit() {
